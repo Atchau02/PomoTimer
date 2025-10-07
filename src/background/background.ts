@@ -1,11 +1,12 @@
-type Mode = 'Initial' | 'Work' | 'Break' | 'Finish';
+import type { Mode } from '../types';
+
+let currentMode: Mode = 'initial';
 
 let timerId: number | null = null;
 let timerStartTime: number;
-let currentMode: Mode = 'Initial';
 
-const workMinutes: number = 0.1;
-const breakMinutes: number = 0.05;
+let workMinutes: number = 25;
+let breakMinutes: number = 5;
 
 let totalWorkSeconds: number = 0;
 let totalBreakSeconds: number = 0;
@@ -17,15 +18,18 @@ chrome.storage.local.set({
   remainingSeconds: workMinutes * 60,
 });
 
-chrome.storage.local.set({ workMinutes, breakMinutes });
+const listener = (changes: any) => {
+  workMinutes = changes.workMinutes.newValue ?? workMinutes;
+  breakMinutes = changes.breakMinutes.newValue ?? breakMinutes;
+};
+
+chrome.storage.onChanged.addListener(listener);
 
 function startSession(mode: Mode) {
   if (timerId) return;
 
-  console.log('start session: ', mode);
-
   currentMode = mode;
-  const durationSeconds = mode === 'Work' ? workMinutes * 60 : breakMinutes * 60;
+  const durationSeconds = mode === 'work' ? workMinutes * 60 : breakMinutes * 60;
   timerStartTime = Date.now();
 
   chrome.storage.local.set({ currentMode: mode, remainingSeconds: durationSeconds });
@@ -35,7 +39,7 @@ function startSession(mode: Mode) {
     const remainingSeconds = durationSeconds - elapsedSeconds;
     chrome.storage.local.set({ remainingSeconds });
 
-    if (currentMode === 'Work') {
+    if (currentMode === 'work') {
       totalWorkSeconds += elapsedSeconds;
     } else {
       totalBreakSeconds += elapsedSeconds;
@@ -45,10 +49,10 @@ function startSession(mode: Mode) {
       clearInterval(timerId!);
       timerId = null;
 
-      if (mode === 'Work') {
-        startSession('Break'); // start break after work
-      } else if (mode === 'Break') {
-        startSession('Work'); // start work after break
+      if (mode === 'work') {
+        startSession('break'); // start break after work
+      } else if (mode === 'break') {
+        startSession('work'); // start work after break
       }
     }
   }, 1000);
@@ -60,7 +64,7 @@ function stopTimer() {
 
 function finish() {
   console.log('Finish session');
-  currentMode = 'Finish';
+  currentMode = 'finish';
   clearInterval(timerId!);
   timerId = null;
 
@@ -70,7 +74,7 @@ function finish() {
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   switch (message.action) {
     case 'start':
-      startSession('Work');
+      startSession('work');
       break;
     case 'stop':
       stopTimer();

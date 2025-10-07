@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import Timer from '../components/Timer';
 
-type Mode = 'Initial' | 'Work' | 'Break' | 'Finish';
+import Timer from '../components/Timer';
+import Button from '../components/Button';
+import TimeSliders from '../components/TimeSliders';
+
+import type { Mode } from '../types';
 
 function Popup() {
-  const [mode, setMode] = useState<Mode>('Initial');
+  const [mode, setMode] = useState<Mode>('initial');
 
   useEffect(() => {
     chrome.storage.local.get('currentMode', (data) => {
@@ -44,21 +47,18 @@ function Popup() {
         Mode: <span className="font-semibold">{mode}</span>
       </p>
 
-      <Timer />
+      {(mode === 'initial' || mode === 'finish') && <TimeSliders />}
 
-      <div className="mt-6 flex gap-4">
-        <button
-          onClick={handleStartSession}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-        >
-          Start
-        </button>
-        <button
-          onClick={handleFinishSession}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-        >
-          Finish
-        </button>
+      <div className="mt-2 flex flex-col items-center gap-4 w-full">
+        {(mode === 'initial' || mode === 'finish') && (
+          <Button label="Start" clickHandler={handleStartSession} />
+        )}
+        {(mode === 'work' || mode === 'break') && (
+          <>
+            <Timer />
+            <Button label="Finish" clickHandler={handleFinishSession} />
+          </>
+        )}
       </div>
     </div>
   );
