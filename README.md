@@ -1,4 +1,4 @@
-# Pomotimer ⏱️🎮
+# Pomotimer ⏱️
 
 **Pomotimer** is a relaxing, pastel-themed Pomodoro timer Chrome extension. It helps you stay focused during work sessions and reminds you to take breaks, all while providing soothing visuals and gentle notification sounds.
 
@@ -24,6 +24,11 @@
 ---
 
 ## Screenshots
+<img width="323" height="310" alt="Screenshot 2025-10-07 at 8 48 49 PM" src="https://github.com/user-attachments/assets/54f1ebeb-bb5c-472c-ab09-68f116977dbc" />
+
+<img width="321" height="275" alt="Screenshot 2025-10-07 at 8 49 01 PM" src="https://github.com/user-attachments/assets/7bf1fa35-01e9-4be3-b189-80c16777f373" />
+
+<img width="322" height="276" alt="Screenshot 2025-10-07 at 8 51 10 PM" src="https://github.com/user-attachments/assets/da16af96-7b8f-43da-869d-68453a6d024b" />
 
 ---
 
@@ -46,10 +51,9 @@
 
 ## Permissions
 
-- This extension requires the following permissions:
+This extension requires the following permissions:
 - storage – to save timer settings and progress.
 - notifications – to alert you when a session ends.
-- activeTab – optional for future features.
 
 ## Tech Stack
 
