@@ -1,1 +1,1 @@
-export type Mode = 'initial' | 'work' | 'break' | 'finish';
+export type Mode = 'setup' | 'work' | 'break';

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 function TimeSliders() {
-  const [workMinutes, setWorkMinutes] = useState<number>(25);
-  const [breakMinutes, setBreakMinutes] = useState<number>(5);
+  const [workMinutes, setWorkMinutes] = useState<number>();
+  const [breakMinutes, setBreakMinutes] = useState<number>();
 
   // GET storage
   useEffect(() => {
@@ -14,13 +14,23 @@ function TimeSliders() {
 
   // SET storage
   useEffect(() => {
-    chrome.storage.local.set({ workMinutes, breakMinutes, remainingSeconds: workMinutes * 60 });
+    chrome.storage.local.get(['workMinutes', 'breakMinutes'], (data) => {
+      if (data.workMinutes !== workMinutes || data.breakMinutes !== breakMinutes) {
+        chrome.storage.local.set({
+          workMinutes,
+          breakMinutes,
+          remainingSeconds: workMinutes! * 60,
+        });
+      }
+    });
   }, [workMinutes, breakMinutes]);
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-6">
       <div>
-        <label className="text-sm font-medium block mb-1">Work Time: {workMinutes} min</label>
+        <label className="text-sm font-semibold block mb-1 text-purple-700">
+          Work Time: {workMinutes} min
+        </label>
         <input
           type="range"
           min="1"
@@ -28,12 +38,14 @@ function TimeSliders() {
           step="1"
           value={workMinutes}
           onChange={(e) => setWorkMinutes(Number(e.target.value))}
-          className="w-full accent-black cursor-pointer"
+          className="w-full h-2 rounded-lg accent-pink-400 cursor-pointer shadow-sm"
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium block mb-1">Break Time: {breakMinutes} min</label>
+        <label className="text-sm font-semibold block mb-1 text-cyan-700">
+          Break Time: {breakMinutes} min
+        </label>
         <input
           type="range"
           min="1"
@@ -41,7 +53,7 @@ function TimeSliders() {
           step="1"
           value={breakMinutes}
           onChange={(e) => setBreakMinutes(Number(e.target.value))}
-          className="w-full accent-black cursor-pointer"
+          className="w-full h-2 rounded-lg accent-purple-400 cursor-pointer shadow-sm"
         />
       </div>
     </div>

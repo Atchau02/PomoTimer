@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# Pomotimer ⏱️🎮
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Pomotimer** is a relaxing, pastel-themed Pomodoro timer Chrome extension. It helps you stay focused during work sessions and reminds you to take breaks, all while providing soothing visuals and gentle notification sounds.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- 🕓 **Custom Work & Break Intervals**  
+  Adjust your work and break times with smooth pastel sliders.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🎵 **Audio Alerts**  
+  Gentle bell sounds notify you when a session starts or ends.
 
-## Expanding the ESLint configuration
+- 🎨 **Soothing Aesthetic**  
+  Relaxing pastel gradients, soft shadows, and rounded controls for a pleasant experience.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- ⏱️ **Persistent Timer**  
+  Timer state is saved in Chrome storage and continues even if the popup is closed.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 🔔 **Notifications**  
+  Desktop notifications alert you when work or break intervals finish.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Screenshots
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Clone or download this repository:
+2. git clone https://github.com/yourusername/pomotimer.git
+3. Open Chrome and go to chrome://extensions/.
+4. Enable Developer Mode (top-right corner).
+5. Click Load unpacked and select the project folder.
+6. The extension icon should appear in your toolbar.
+
+## Usage
+
+1. Click the Pomotimer icon in Chrome.
+2. Set your preferred work and break intervals using the sliders.
+3. Click Start to begin your work session.
+4. Click Finish to end the session and view a summary of total work and break minutes.
+5. Enjoy the soft pastel arcade theme and audio notifications!
+
+## Permissions
+
+- This extension requires the following permissions:
+- storage – to save timer settings and progress.
+- notifications – to alert you when a session ends.
+- activeTab – optional for future features.
+
+## Tech Stack
+
+- React – For the popup UI.
+- TypeScript – For type safety and better development experience.
+- TailwindCSS – For pastel arcade styling.
+- Chrome Storage API – For persistent timer data.
+- Chrome Notifications API – For desktop notifications.

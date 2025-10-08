@@ -1,7 +1,6 @@
 import type { Mode } from '../types';
 
-let currentMode: Mode = 'initial';
-
+let currentMode: Mode = 'setup';
 let timerId: number | null = null;
 let timerStartTime: number;
 
@@ -18,12 +17,10 @@ chrome.storage.local.set({
   remainingSeconds: workMinutes * 60,
 });
 
-const listener = (changes: any) => {
-  workMinutes = changes.workMinutes.newValue ?? workMinutes;
-  breakMinutes = changes.breakMinutes.newValue ?? breakMinutes;
-};
-
-chrome.storage.onChanged.addListener(listener);
+chrome.storage.onChanged.addListener((changes: any) => {
+  if (changes.workMinutes?.newValue) workMinutes = changes.workMinutes.newValue;
+  if (changes.breakMinutes?.newValue) breakMinutes = changes.breakMinutes.newValue;
+});
 
 function startSession(mode: Mode) {
   if (timerId) return;
@@ -37,38 +34,42 @@ function startSession(mode: Mode) {
   timerId = setInterval(() => {
     const elapsedSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
     const remainingSeconds = durationSeconds - elapsedSeconds;
+
     chrome.storage.local.set({ remainingSeconds });
 
-    if (currentMode === 'work') {
-      totalWorkSeconds += elapsedSeconds;
-    } else {
-      totalBreakSeconds += elapsedSeconds;
-    }
+    if (currentMode === 'work') totalWorkSeconds += elapsedSeconds;
+    else totalBreakSeconds += elapsedSeconds;
 
     if (remainingSeconds <= 0) {
       clearInterval(timerId!);
       timerId = null;
 
-      if (mode === 'work') {
-        startSession('break'); // start break after work
-      } else if (mode === 'break') {
-        startSession('work'); // start work after break
-      }
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: chrome.runtime.getURL('icon.png'),
+        title: mode === 'work' ? 'Work Interval Finished' : 'Break Finished',
+        message: mode === 'work' ? 'Time for a break! ⏰' : 'Break is over! Get back to work! 💪',
+        priority: 2,
+      });
+
+      if (mode === 'work') startSession('break');
+      else if (mode === 'break') startSession('work');
     }
   }, 1000);
 }
 
 function stopTimer() {
-  console.log('stop timer');
+  clearInterval(timerId!);
+  timerId = null;
+  console.log('Timer stopped');
 }
 
 function finish() {
-  console.log('Finish session');
-  currentMode = 'finish';
+  currentMode = 'setup';
   clearInterval(timerId!);
   timerId = null;
-
   chrome.storage.local.set({ currentMode });
+  console.log('Session finished');
 }
 
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
@@ -85,10 +86,10 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
         totalWorkSeconds,
         totalBreakSeconds,
       });
-      totalBreakSeconds = 0;
       totalWorkSeconds = 0;
+      totalBreakSeconds = 0;
       break;
     default:
-      console.log('action not handled');
+      console.log('Unknown action:', message.action);
   }
 });
